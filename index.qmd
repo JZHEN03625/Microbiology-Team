@@ -1,0 +1,177 @@
+# 文献复现：Cooperative growth in microbial communities is a driver of multistability
+
+*Nature Communications, 2024, 15:4709*  
+DOI: [10.1038/s41467-024-48521-9](https://www.nature.com/articles/s41467-024-48521-9)
+
+本文复现了文献中的核心分析流程，包括实验数据分析、群落多稳态模拟及合作交互建模。
+
+---
+
+## 1. 目录结构
+
+```
+
+project/
+├── output/
+│   ├── figure6
+│   ├── figure10-11-StochasticModel
+│   └── main text figures1-5
+├── scripts/
+│   ├── MainTextFigures-GitHubVersion.R
+│   ├── SuppFig6-CooperativeInteractions.R
+│   └── SuppFigs10&11-StochasticModel.R
+├── raw-data.xlsx
+└── index.qmd
+
+````
+
+---
+
+## 2. 数据来源说明
+
+| 脚本文件 | 数据来源 | 说明 |
+|-----------|----------|------|
+| `MainTextFigures-GitHubVersion.R` | 模拟数据或 CSV/Excel 文件 | 如果 CSV/Excel 文件存在，脚本会读取真实数据生成图表；如果文件不存在，脚本会自动生成随机模拟数据用于示例绘图 |
+| `SuppFig6-CooperativeInteractions.R` | 随机生成数据 | 所有数据（初始丰度、相互作用矩阵）在代码中生成，无需外部数据 |
+| `SuppFigs10&11-StochasticModel.R` | 随机生成数据 | 随机生成初始条件和相互作用矩阵，多次模拟计算多稳态，完全不依赖外部 CSV |
+
+> **说明**：如果希望复现真实实验数据，需将 Excel 文件放在 `data/` 文件夹，并使用 `read_excel()` 或先转换为 CSV 供脚本读取。
+
+---
+
+## 3. 数据准备
+
+1. 将实验数据 Excel 文件放入 `data/` 文件夹，命名示例：
+   - `monoculture_growth.xlsx`
+   - `pairwise_competition.xlsx`
+   - `six_species_community.xlsx`
+2. 安装 R 包：
+```r
+install.packages(c("ggplot2", "dplyr", "tidyr", "reshape2", "readxl"))
+````
+
+3. 读取 Excel 数据示例：
+
+```r
+library(readxl)
+
+monoculture_data <- read_excel("data/monoculture_growth.xlsx", sheet = "Sheet1")
+pairwise_data <- read_excel("data/pairwise_competition.xlsx", sheet = "Sheet1")
+six_species_data <- read_excel("data/six_species_community.xlsx", sheet = "Sheet1")
+```
+
+4. 可选：将 Excel 转成 CSV，供原脚本使用：
+
+```r
+write.csv(monoculture_data, "data/monoculture_growth.csv", row.names = FALSE)
+write.csv(pairwise_data, "data/pairwise_competition.csv", row.names = FALSE)
+write.csv(six_species_data, "data/six_species_community.csv", row.names = FALSE)
+```
+
+---
+
+## 4. 脚本运行说明
+
+### 4.1 主文本 Figures（Figures 1–5）
+
+```r
+# 安装依赖
+install.packages(c("ggplot2", "dplyr", "tidyr", "reshape2", "readxl"))
+
+# 运行脚本
+source("scripts/MainTextFigures-GitHubVersion.R")
+```
+
+* 如果 CSV/Excel 文件存在，脚本读取实验数据生成图表
+* 如果没有 CSV/Excel 文件，脚本会使用内部随机数据生成示例图表
+
+### 4.2 Supplementary Figure 6（合作交互模拟）
+
+```r
+source("scripts/SuppFig6-CooperativeInteractions.R")
+```
+
+* 所有数据在脚本中随机生成
+* 输出合作强度热图和多稳态折线图
+
+### 4.3 Supplementary Figures 10 & 11（随机模型模拟）
+
+```r
+source("scripts/SuppFigs10&11-StochasticModel.R")
+```
+
+* 初始条件和相互作用矩阵随机生成
+* 输出物种丰度热图和稳定态频率统计图
+
+---
+
+## 5. 输出图表说明
+
+* **MainTextFigures-GitHubVersion.R**
+
+  * 输出示例：`NoAllee-Cn 2.jpeg`、`NoAllee-Lp 3.jpeg`、`NoAllee-Mc 3.jpeg` 等
+  * 格式：`NoAllee-<Species> <Replicate>.jpeg`
+  * 分析内容：单物种、二元共培养及六物种群落生长曲线及多稳态结果（Figures 1–5）
+
+* **SuppFig6-CooperativeInteractions.R**
+
+  * 输出示例：`SuppFig6_Cooperation-<Species>.png`
+  * 分析内容：不同合作强度下群落多稳态的影响（Supplementary Figure 6）
+
+* **SuppFigs10&11-StochasticModel.R**
+
+  * 输出示例：`SuppFig10_Abundance-<Species>.png`、`SuppFig11_StabilityFreq.png`
+  * 分析内容：随机模型模拟多稳态，生成物种丰度热图和稳定态频率统计（Supplementary Figures 10 & 11）
+
+---
+
+## 6. 文献研究解读与结果展现
+
+### 6.1 研究目的
+
+* 验证微生物群落在相同条件下可产生多稳态（multistability）
+* 探索合作交互对多稳态形成的贡献
+* 分析初始物种比例对最终群落结构的影响（路径依赖 / priority effect）
+
+### 6.2 核心实验设计
+
+* 微生物：6 种呼吸道相关物种（Cn、Lp、Mc、Sa、Se 等）
+* 培养条件：单独培养、二元共培养、六物种群落
+* 初始条件：不同物种起始丰度
+* 测量指标：OD600 或物种丰度随时间变化
+
+### 6.3 主要发现
+
+* **Figures 1–5（主文本）**
+
+  * 单物种和二元共培养中 bistability 出现
+  * 六物种群落呈现 ≥4 种稳定状态
+  * 初始条件决定最终群落稳定态
+
+* **Supplementary Figure 6**
+
+  * 合作强度越高，多稳态数量增加
+  * 合作交互是多稳态形成的重要因素
+
+* **Supplementary Figures 10 & 11**
+
+  * 随机模型多次模拟初始条件
+  * 热图显示物种丰度随时间变化
+  * 条形图/点图显示不同初始条件下稳定态频率
+  * 模型结果与实验一致，验证合作交互和初始条件的重要性
+
+### 6.4 结果总结
+
+* 多稳态不仅由竞争驱动，合作性增长是核心机制
+* 初始物种比例决定最终稳定态（路径依赖）
+* 实验和模型结果高度一致，支持文章结论
+
+---
+
+## 7. 注意事项
+
+* 设置随机种子保证复现结果一致
+* 检查 CSV/Excel 数据列名与脚本匹配
+* 图表输出可使用 `ggsave()` 指定文件名和格式
+* 微小差异可能来源于随机数生成或数据预处理
+

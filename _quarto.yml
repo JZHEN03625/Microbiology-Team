@@ -1,0 +1,25 @@
+project:
+  type: book
+
+book:
+  title: "1"
+  author: "Norah Jones"
+  date: "2026/5/7"
+  chapters:
+    - index.qmd
+    - introMainTextFigures-GitHubVersion.qmd
+    - SuppFig6-CooperativeInteractions.qmd
+    - referencesSuppFigs10&11-StochasticModel.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    documentclass: scrreprt
+
+
+
