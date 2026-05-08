@@ -2,6 +2,12 @@
 
 该代码使用Lotka-Volterra模型模拟两个物种在Allee效应和相互作用影响下的种群动态，并生成相应的相位图和稳态点可视化。
 
+安装devtool包方法：（原始包老旧未更新）
+# 如果还未安装 devtools 包，需要先安装
+install.packages("devtools")
+# 使用 devtools 包从 GitHub 安装开发版本
+devtools::install_github("cran/phaseR")
+
 ```{r}
 #Code for a 2-species LV model with one or both species subject to an Allee effect
 library(deSolve)
